@@ -1,80 +1,51 @@
 # 📖 AI Workflow Master Guide: From Zero to Pro
 
-Welcome! This guide explains exactly how this AI Automation system works, even if you are a absolute beginner. We will break down every click, every line of code, and every challenge we solved.
+This guide explains how this AI Automation system works, designed for absolute beginners.
 
 ---
 
-## 🏗️ 1. The "Big Picture" Architecture
-Think of this app as a **factory pipeline**:
-1.  **Input (Front Gate):** You type a query on the website.
-2.  **Manager (Flask):** The code decides what to do with your query.
-3.  **Brain (Gemini AI):** If needed, the AI thinks of a response.
-4.  **Accounting (SQLite):** Every query is written down in a database book.
-5.  **Courier (SMTP):** If you asked for an email, a letter is sent.
-6.  **Dashboard (UI):** You see the result on your screen.
+## ⚙️ 1. How the Workflow Works
+1.  **Frontend (UI):** Users interact with a responsive glassmorphism dashboard.
+2.  **Logic Engine (Flask):** The `process_workflow()` function in `app.py` acts as the traffic controller.
+    *   **Keyword "Job"**: Triggers a heavy automation (AI -> DB -> Email).
+    *   **Keyword "Help"**: Triggers a static support response (Saves API costs).
+3.  **Database:** Uses SQLite (a local file) to keep a permanent log of all questions.
+4.  **Webhooks**: External apps can send data to `/webhook` for automated logging.
 
 ---
 
-## ⚙️ 2. What happens when you click "Execute Workflow"?
-
-### Step A: The Frontend (JavaScript)
-*   **File:** `static/script.js`
-*   When you click the button, `fetch()` sends your query to the server's `/ask` address.
-*   The UI shows a "loading" spinner so you know the factory is working.
-
-### Step B: The Logic Engine (Python)
-*   **File:** `app.py` -> `process_workflow()`
-*   The code looks for **Keywords**:
-    *   If you said **"Job"**: It knows this is a high-priority task. It calls the AI, saves it, and **triggers the email system** automatically.
-    *   If you said **"Help"**: It doesn't even bother the AI. It returns a quick support message instantly (saving you money and time!).
-    *   **Otherwise**: It just gives a normal AI response.
-
-### Step C: The Intelligence (API)
-*   The system talks to **Google Gemini**. We send your text, and it returns a smart paragraph.
-
-### Step D: Success & Display
-*   The server sends a JSON message back to your browser.
-*   The JavaScript catches that message and hides the spinner, showing you the AI's words.
+## 📡 2. Deployment: Mobile & PC
+The app is fully responsive. It uses **CSS Media Queries** to detect if you are on a phone or a laptop and automatically resizes the layout.
+*   **Production Host:** Render.com
+*   **Production Server:** Gunicorn (handles multiple users simultaneously).
+*   **Dynamic Port:** The app detects the environment port automatically (`os.environ.get("PORT")`).
 
 ---
 
-## 🚧 3. Challenges We Faced & How We Fixed Them
+## ⚡ 3. Running out of Quota? (Adding Other LLMs)
+If you hit your **Gemini Quota**, you can easily swap models. Here is how you would do it:
 
-### Challenge 1: The "404 Model Not Found" Error
-*   **Problem:** We tried calling names like `gemini-1.5-flash`, but the API said "I don't know that name."
-*   **Solution:** We created a "Test Script" to list every model your specific key could see. We discovered that `gemini-2.5-flash` was your active version and updated the code to match.
+### Adding Groq (A very fast free alternative):
+1. Get a key from [Groq Cloud](https://console.groq.com/).
+2. In `app.py`, update `get_ai_response` to:
+```python
+from groq import Groq
+client = Groq(api_key="your_groq_key")
 
-### Challenge 2: Sensitive Information Leaks
-*   **Problem:** If we push your API keys to GitHub, hackers can steal them and spend your money.
-*   **Solution:** We used a `.env` file to keep keys separate and a `.gitignore` file to tell GitHub: "Don't ever upload the .env file!"
-
-### Challenge 3: Responsive Design
-*   **Problem:** The website looked great on a Laptop but broken on a Phone.
-*   **Solution:** We used **CSS Media Queries**. We told the browser: "If the screen is smaller than 640px, stack the buttons and shrink the text."
-
----
-
-## 🛠️ 4. External Webhooks: What are they?
-Imagine you have another app (like a Google Form or GitHub). You want them to "tell" your Flask app when something happens.
-*   They send a POST request to `your-site.com/webhook`.
-*   Our app is listening! It will print that data in the terminal and say "Webhook received."
-*   This is how "Pro" apps talk to each other without humans.
+def get_ai_response(user_input):
+    completion = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": user_input}]
+    )
+    return completion.choices[0].message.content
+```
 
 ---
 
-## 💡 5. Real-World Use Case: The "AI Hiring Assistant"
-A company could use this exact code to:
-1.  Receive a Job Description from a manager.
-2.  Have the AI summarize it.
-3.  Save the summary to their internal database.
-4.  Email the summarized version to the HR team.
-**All with one click.**
+## 🚧 4. Challenges & Solutions Record
+*   **Model 404 Error:** Solved by listing available models via a custom check script and matching the name `gemini-2.5-flash`.
+*   **Vercel Crash (Error 500):** Solved by moving `init_db()` to the top level and ensuring Environment Variables are set.
+*   **Port Conflicts:** Fixed by using `host='0.0.0.0'` and `os.environ.get("PORT")` for Render compatibility.
 
 ---
-
-### Basic Glossary for You:
-*   **Flask:** The "skeleton" of your website.
-*   **API Key:** Your secret password to use the AI's brain.
-*   **SMTP:** The protocol (language) used to send emails.
-*   **SQLite:** A tiny, fast database that lives in a single file on your computer.
-*   **Vercel:** A place on the internet where your code "lives" so everyone can see it.
+**Happy Automating!**
