@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workflow Automator | Intelligence on Demand</title>
+    <meta name="description" content="A powerful AI workflow automation system with specialized task triggers and history tracking.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="glass-background"></div>
+    
+    <main class="container">
+        <header class="header">
+            <div class="logo-wrapper">
+                <i data-lucide="zap" class="logo-icon"></i>
+                <h1>AI <span class="gradient-text">Workflow</span></h1>
+            </div>
+            <p class="subtitle">Intelligent Automation with Specialized Triggers</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="automation">Automator</button>
+            <button class="tab-btn" data-tab="history">History Logs</button>
+        </nav>
+
+        <section id="automation-tab" class="tab-content transition-fade">
+            <div class="workflow-card">
+                <div class="info-banner">
+                    <i data-lucide="info"></i>
+                    <p>Tip: Include <strong>"job"</strong> in your query to trigger the job automation workflow.</p>
+                </div>
+
+                <form id="workflow-form">
+                    <div class="input-group">
+                        <label for="query">Input Query</label>
+                        <textarea id="query" placeholder="e.g. Help me with a job description for a Python Developer..." required></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">Destination Email (Optional)</label>
+                        <div class="email-input-wrapper">
+                            <i data-lucide="mail" class="field-icon"></i>
+                            <input type="email" id="email" placeholder="your-email@example.com">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn">
+                        <span>Execute Workflow</span>
+                        <i data-lucide="play"></i>
+                    </button>
+                </form>
+
+                <div id="loading" class="hidden">
+                    <div class="loader"></div>
+                    <p>Running Automated Workflow...</p>
+                </div>
+
+                <div id="response-container" class="hidden">
+                    <div class="response-header">
+                        <div class="status-indicator">
+                            <span id="workflow-status" class="status-label"></span>
+                            <span id="email-badge" class="badge"></span>
+                        </div>
+                    </div>
+                    <div id="ai-response-text" class="response-body"></div>
+                    <button id="reset-btn" class="secondary-btn">Next Task</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="history-tab" class="tab-content hidden transition-fade">
+            <div class="history-card">
+                <h3>Request History</h3>
+                <div id="history-list" class="history-list">
+                    <!-- History items will be injected here -->
+                    <p class="empty-msg">No history records found.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 AI Workflow Automation. External Webhooks: <code>/webhook</code> (POST)</p>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
